@@ -1,100 +1,88 @@
-set nocompatible              " required
+set nocompatible              " be iMproved, required
 filetype off                  " required
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
-
 " alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
+" call vundle#begin('~/some/path/here')
 
 " let Vundle manage Vundle, required
-Plugin 'gmarik/Vundle.vim'
+Plugin 'VundleVim/Vundle.vim'
 
-" Add all your plugins here (note older versions of Vundle used Bundle instead of Plugin)
-
-Plugin 'tmhedberg/SimpylFold'
-Plugin 'vim-scripts/indentpython.vim'
-
+" " The following are examples of different formats supported.
+" " Keep Plugin commands between vundle#begin/end.
+" " plugin on GitHub repo
+" " iPlugin 'tpope/vim-fugitive'
+" " plugin from http://vim-scripts.org/vim/scripts.html
+" " Plugin 'L9'
+" " Git plugin not hosted on GitHub
+" " iPlugin 'git://git.wincent.com/command-t.git'
+" " git repos on your local machine (i.e. when working on your own plugin)
+" " iPlugin 'file:///home/gmarik/path/to/plugin'
+" " The sparkup vim script is in a subdirectory of this repo called vim.
+" " Pass the path to set the runtimepath properly.
+" " iPlugin 'rstacruz/sparkup', {'rtp': 'vim/'}
+" " Install L9 and avoid a Naming conflict if you've already installed a
+" " different version somewhere else.
+" " iPlugin 'ascenator/L9', {'name': 'newL9'}
+"
 Plugin 'scrooloose/syntastic'
-
-" flake8 for syntax checking
-Plugin 'nvie/vim-flake8'
-
-" auto-pep8
-Plugin 'tell-k/vim-autopep8'
-
-" python-mode for python IDE
-"Plugin 'klen/python-mode'
-
-" for any completion in insert mode
+Plugin 'tmhedberg/simpylfold'
+Plugin 'nanotech/jellybeans.vim'
+Plugin 'townk/vim-autoclose'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'flazz/vim-colorschemes'
 Plugin 'ervandew/supertab'
 
-" hemisu colorscheme
-Plugin 'noahfrederick/vim-hemisu'
+" Plugin 'davidhalter/jedi-vim'
+" for python autocomplete
 
-" search anything- I mean, ANYTHING
-Plugin 'kien/ctrlp.vim'
-
-Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
-
-" commenting
-Plugin 'scrooloose/nerdcommenter'
 
 " for vim-pad
+Plugin 'vim-pandoc/vim-pandoc'
+Plugin 'vim-pandoc/vim-pandoc-syntax'
 Plugin 'fmoralesc/vim-pad'
 
-" for autocorrection
-Plugin 'sedm0784/vim-you-autocorrect'
-
+" for filename completion
+Plugin 'boundincode/autofilename'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
+" To ignore plugin indent changes, instead use:
+"filetype plugin on
+"
+" Brief help
+" :PluginList       - lists configured plugins
+" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
+" :PluginSearch foo - searches for foo; append `!` to refresh local cache
+" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
+"
+" see :h vundle for more details or wiki for FAQ
+" Put your non-Plugin stuff after this line
+"
+"
+hi Normal ctermbg=NONE
 
-" Enable folding
-set foldmethod=indent
-set foldlevel=99
-
-" This will give you the standard four spaces when you hit tab, ensure your line length doesn’t go beyond 80 characters, and store the file in a unix format so you don’t get a bunch of conversion issues when checking into GitHub and/or sharing with other users.
-set tabstop=4
-set softtabstop=4
-set shiftwidth=4
-set textwidth=100
-set expandtab
-set autoindent
-set fileformat=unix
-"set spell spelllang=en_gb
-
-set encoding=utf-8
-
-let python_highlight_all=1
-syntax on
-
-" vim-pad directory
-let g:pad#dir = "./notes/"
-
- "set powerline module to use python-3
-"let g:powerline_pycmd = "py3"
-
+set t_Co=256
+set tabstop=4 softtabstop=0 expandtab shiftwidth=4 smarttab
 filetype plugin on
+
+syntax on
+set background=dark
+colorscheme base
+
 set nu
 set cursorline
-set title
-set mouse=a
-
 set number
 set relativenumber
+set title
 
-" forces Vim to source .vimrc file if it is present in the working dir, for project-specific
-" configuration
-set exrc
+" let g:pymode_rope_lookup_project = 0
 
-" restricts usage of some commands because of the above exrc setting, for security
-set secure
+" allow mouse usage
+set mouse=a
 
-" for python-mode plugin
-let g:pymode_python = 'python3'
-" for python-mode rope to be disabled
-let g:pymode_rope = 0
-
+" allow vim-pandoc to be used with vim-pad
+let g:pad#default_format = "pandoc"
