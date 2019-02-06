@@ -1,19 +1,23 @@
 # If you come from bash you might have to change your $PATH.
-export PATH=$PATH:$HOME/anaconda3/bin:$HOME/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:$HOME/.local/bin
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib32/:/usr/lib/:/usr/lib64/:$HOME/lib/:$HOME/.local/lib/:$HOME/bin/modeller9.20/lib/x86_64-intel8
+# export PATH=$HOME/bin:/usr/local/bin:$PATH
 
-export PYTHONPATH=$PYTHONPATH:$HOME/bin/modeller9.20/modlib:$HOME/bin/modeller9.20/lib/x86_64-intel8:$HOME/bin/modeller9.20/lib/x86_64-intel8/python2.5:$HOME/bin/modeller9.20/lib/x86_64-intel8/python3.0:$HOME/bin/modeller9.20/lib/x86_64-intel8/python3.2:$HOME/bin/modeller9.20/lib/x86_64-intel8/python3.3
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
+
+export PATH=$HOME/bin:$HOME/local/bin:$PATH
+. $HOME/anaconda3/etc/profile.d/conda.sh
+
+#export PYTHONPATH=$PYTHONPATH:$HOME/bin/modeller_9.20/modlib:$HOME/bin/modeller_9.20/lib/x86_64-intel8/python2.5:$HOME/bin/modeller_9.20/lib/x86_64-intel8/python3.0:$HOME/bin/modeller_9.20/lib/x86_64-intel8/python3.2:$HOME/bin/modeller_9.20/lib/x86_64-intel8/python3.3
+export PYTHONPATH=$PYTHONPATH:$HOME/bin/modeller9.16/modlib:$HOME/bin/modeller9.16/lib/x86_64-intel8/python2.5:$HOME/bin/modeller9.16/lib/x86_64-intel8/python3.0:$HOME/bin/modeller9.16/lib/x86_64-intel8/python3.2:$HOME/bin/modeller9.16/lib/x86_64-intel8/python3.3
+
+#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/bin/modeller_9.20/lib/x86_64-intel8
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/bin/modeller9.16/lib/x86_64-intel8
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
 ZSH_THEME="refined-zpoc"
 
-
-#PROMPT=${PWD/#$HOME/~}
-#PROMPT="%(?.%F{magenta}.%F{red})$%f " # Display a red prompt char on failure
 # Set list of themes to load
 # Setting this variable when ZSH_THEME=random
 # cause zsh load theme from this variable instead of
@@ -41,15 +45,15 @@ ZSH_THEME="refined-zpoc"
 # DISABLE_AUTO_TITLE="true"
 
 # Uncomment the following line to enable command auto-correction.
-ENABLE_CORRECTION="true"
+# ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
-COMPLETION_WAITING_DOTS="true"
+# COMPLETION_WAITING_DOTS="true"
 
 # Uncomment the following line if you want to disable marking untracked files
 # under VCS as dirty. This makes repository status check for large repositories
 # much, much faster.
-DISABLE_UNTRACKED_FILES_DIRTY="true"
+# DISABLE_UNTRACKED_FILES_DIRTY="true"
 
 # Uncomment the following line if you want to change the command execution time
 # stamp shown in the history command output.
@@ -64,7 +68,7 @@ HIST_STAMPS="dd/mm/yyyy"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-  git cp compleat
+  git cp
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -89,7 +93,6 @@ source $ZSH/oh-my-zsh.sh
 # ssh
 # export SSH_KEY_PATH="~/.ssh/rsa_id"
 
-
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
@@ -99,7 +102,25 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias vi=vim
-alias python=python2
-alias chimera=$HOME/bin/chimera
-alias "sudo pacman -S"="sudo pacman --needed -S"
-alias sudo="sudo "
+alias qstat="noglob qstat"
+# Lines configured by zsh-newuser-install
+HISTFILE=~/.histfile
+HISTSIZE=1000
+SAVEHIST=1000
+unsetopt appendhistory
+# End of lines configured by zsh-newuser-install
+# The following lines were added by compinstall
+zstyle :compinstall filename '$HOME/.zshrc'
+
+autoload -Uz compinit
+compinit
+# End of lines added by compinstall
+#
+
+export TIMEFMT=$" %J"$'\n\n%U\tuser\n%S\tsystem\n%P\tcpu\n%M KB\tmem\n%*E\ttotal\n'
+
+PATH="$HOME/perl5/bin${PATH:+:${PATH}}"; export PATH;
+PERL5LIB="$HOME/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
+PERL_LOCAL_LIB_ROOT="$HOME/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
+PERL_MB_OPT="--install_base \"$HOME/perl5\""; export PERL_MB_OPT;
+PERL_MM_OPT="INSTALL_BASE=$HOME/perl5"; export PERL_MM_OPT;
