@@ -5,29 +5,31 @@ filetype off                  " required
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 " alternatively, pass a path where Vundle should install plugins
-" call vundle#begin('~/some/path/here')
+"call vundle#begin('~/some/path/here')
 
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
 
-" " The following are examples of different formats supported.
-" " Keep Plugin commands between vundle#begin/end.
-" " plugin on GitHub repo
-" " iPlugin 'tpope/vim-fugitive'
-" " plugin from http://vim-scripts.org/vim/scripts.html
-" " Plugin 'L9'
-" " Git plugin not hosted on GitHub
-" " iPlugin 'git://git.wincent.com/command-t.git'
-" " git repos on your local machine (i.e. when working on your own plugin)
-" " iPlugin 'file:///home/gmarik/path/to/plugin'
-" " The sparkup vim script is in a subdirectory of this repo called vim.
-" " Pass the path to set the runtimepath properly.
-" " iPlugin 'rstacruz/sparkup', {'rtp': 'vim/'}
-" " Install L9 and avoid a Naming conflict if you've already installed a
-" " different version somewhere else.
-" " iPlugin 'ascenator/L9', {'name': 'newL9'}
-"
+" The following are examples of different formats supported.
+" Keep Plugin commands between vundle#begin/end.
+" plugin on GitHub repo
+" iPlugin 'tpope/vim-fugitive'
+" plugin from http://vim-scripts.org/vim/scripts.html
+" Plugin 'L9'
+" Git plugin not hosted on GitHub
+" iPlugin 'git://git.wincent.com/command-t.git'
+" git repos on your local machine (i.e. when working on your own plugin)
+" iPlugin 'file:///home/gmarik/path/to/plugin'
+" The sparkup vim script is in a subdirectory of this repo called vim.
+" Pass the path to set the runtimepath properly.
+" iPlugin 'rstacruz/sparkup', {'rtp': 'vim/'}
+" Install L9 and avoid a Naming conflict if you've already installed a
+" different version somewhere else.
+" iPlugin 'ascenator/L9', {'name': 'newL9'}
+
+" for syntax checking
 Plugin 'scrooloose/syntastic'
+
 Plugin 'tmhedberg/simpylfold'
 Plugin 'nanotech/jellybeans.vim'
 Plugin 'townk/vim-autoclose'
@@ -38,6 +40,8 @@ Plugin 'ervandew/supertab'
 " Plugin 'davidhalter/jedi-vim'
 " for python autocomplete
 
+" for the statusbar
+Plugin 'vim-airline/vim-airline'
 
 " for vim-pad
 Plugin 'vim-pandoc/vim-pandoc'
@@ -65,13 +69,16 @@ filetype plugin indent on    " required
 "
 hi Normal ctermbg=NONE
 
-set t_Co=256
+"set t_Co=256
 set tabstop=4 softtabstop=0 expandtab shiftwidth=4 smarttab
 filetype plugin on
 
 syntax on
 set background=dark
-colorscheme base
+"colorscheme base
+
+" make bksp work normally
+set backspace=indent,eol,start
 
 set nu
 set cursorline
@@ -86,3 +93,6 @@ set mouse=a
 
 " allow vim-pandoc to be used with vim-pad
 let g:pad#default_format = "pandoc"
+let g:pad#dir = "/home/swastik/notes/"
+let g:pad#local_dir = "/home/swastik/notes/"
+
