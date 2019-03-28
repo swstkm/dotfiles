@@ -67,6 +67,8 @@ filetype plugin indent on    " required
 " Put your non-Plugin stuff after this line
 "
 "
+
+source /usr/share/vim/vim81/defaults.vim
 hi Normal ctermbg=NONE
 
 "set t_Co=256
