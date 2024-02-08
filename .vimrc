@@ -11,12 +11,18 @@ Plug 'tpope/vim-sensible'
 Plug 'flazz/vim-colorschemes'
 
 Plug 'itchyny/lightline.vim'
-Plug 'terryma/vim-multiple-cursors'
 
 " pired brackets, quotes, etc
 Plug 'jiangmiao/auto-pairs'
 " easy commenting
 Plug 'scrooloose/nerdcommenter'
+
+" for csv files
+" Plug 'chrisbra/csv.vim'
+
+" for python in vim
+Plug 'python-mode/python-mode', { 'for': 'python', 'branch': 'develop' }
+
 
 call plug#end()
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -28,7 +34,7 @@ set tabstop=4 softtabstop=0 expandtab shiftwidth=4 smarttab
 filetype plugin on
 
 syntax on
-set background=dark
+"set background=dark
 "colorscheme base
 
 " make bksp work normally

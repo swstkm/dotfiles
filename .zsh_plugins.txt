@@ -1,0 +1,28 @@
+# With antidote, using Zephyr's completion plugin is recommended. This plugin is meant
+# to be run near the TOP of your .zsh_plugins.txt file.
+mattmc3/zephyr path:plugins/completion
+
+ohmyzsh/ohmyzsh
+# oh-my-zsh plugins
+ohmyzsh/ohmyzsh path:plugins/copybuffer
+ohmyzsh/ohmyzsh path:plugins/cp
+ohmyzsh/ohmyzsh path:plugins/colored-man-pages
+
+# Autosuggestions, similar to fish shell
+zsh-users/zsh-autosuggestions
+
+# Syntax highlighting for Zsh
+zsh-users/zsh-syntax-highlighting kind:defer
+
+# Git utilities
+#zsh-users/zsh-completions
+
+# Another set of Git utilities
+zsh-users/zsh-history-substring-search
+
+# Command line calculator
+arzzen/calc.plugin.zsh
+
+# Zsh theme
+romkatv/powerlevel10k
+
