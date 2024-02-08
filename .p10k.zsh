@@ -909,7 +909,7 @@
 
   # Don't show context unless running with privileges or in SSH.
   # Tip: Remove the next line to always show context.
-  typeset -g POWERLEVEL9K_CONTEXT_{DEFAULT,SUDO}_{CONTENT,VISUAL_IDENTIFIER}_EXPANSION=
+  #typeset -g POWERLEVEL9K_CONTEXT_{DEFAULT,SUDO}_{CONTENT,VISUAL_IDENTIFIER}_EXPANSION=
 
   # Custom icon.
   # typeset -g POWERLEVEL9K_CONTEXT_VISUAL_IDENTIFIER_EXPANSION='⭐'
@@ -1708,18 +1708,6 @@
 typeset -g POWERLEVEL9K_CONFIG_FILE=${${(%):-%x}:a}
 
 ################ USER
-
-
-
-
-typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
-  dir vcs newline
-  time prompt_char
-)
-
-typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(
-  load time newline
-)
 
 typeset -g POWERLEVEL9K_TIME_UPDATE_ON_COMMAND=true
 typeset -g POWERLEVEL9K_TRANSIENT_PROMPT=off
