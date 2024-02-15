@@ -6,6 +6,7 @@ ohmyzsh/ohmyzsh
 # oh-my-zsh plugins
 ohmyzsh/ohmyzsh path:plugins/copybuffer
 ohmyzsh/ohmyzsh path:plugins/cp
+ohmyzsh/ohmyzsh path:plugins/git
 ohmyzsh/ohmyzsh path:plugins/colored-man-pages
 
 # Autosuggestions, similar to fish shell
