@@ -29,6 +29,7 @@ HIST_STAMPS="dd/mm/yyyy"
 alias vi=vim
 alias qstat="noglob qstat"
 alias emacs="emacsclient -c"
+alias yay="yay --noconfirm"
 # History
 HISTFILE=$HOME/.histfile
 HISTSIZE=100000
