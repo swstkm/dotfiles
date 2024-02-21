@@ -30,6 +30,7 @@ alias vi=vim
 alias qstat="noglob qstat"
 alias emacs="emacsclient -c"
 alias yay="yay --noconfirm"
+alias ps="ps -xfj"
 # History
 HISTFILE=$HOME/.histfile
 HISTSIZE=100000
