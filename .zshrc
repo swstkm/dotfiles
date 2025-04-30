@@ -5,19 +5,8 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-#######################################################################################
-# First, clone Antidote if it's not already installed
-[[ -d ${ZDOTDIR:-~}/.antidote ]] || git clone --depth=1 https://github.com/mattmc3/antidote.git ${ZDOTDIR:-~}/.antidote
-# Ensure you have a .zsh_plugins.txt file where you can add plugins
-[[ -f ${zsh_plugins:r}.txt ]] || touch ${zsh_plugins:r}.txt
-# source antidote
-source ${ZDOTDIR:-~}/.antidote/antidote.zsh
-# initialize plugins statically with ${ZDOTDIR:-~}/.zsh_plugins.txt
-antidote load
-# generate ~/.zsh_plugins.zsh
-antidote bundle <~/.zsh_plugins.txt >~/.zsh_plugins.zsh
-#######################################################################################
-
+source ${ZDOTDIR:-$HOME}/.antidote/antidote.zsh
+antidote load ${ZDOTDIR:-$HOME}/.zsh_plugins.txt
 
 # Uncomment the following line to change how often to auto-update (in days).
 export UPDATE_ZSH_DAYS=30
@@ -30,7 +19,6 @@ alias vi=vim
 alias qstat="noglob qstat"
 alias emacs="emacsclient -c"
 alias yay="yay --noconfirm"
-alias ps="ps -xfj"
 # History
 HISTFILE=$HOME/.histfile
 HISTSIZE=100000

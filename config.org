@@ -1,0 +1,135 @@
+#+TITLE: Swastik's Doom Emacs Config
+#+AUTHOR: Swastik Mishra
+#+DESCRIPTION: Personal config
+#+STARTUP: showeverything
+
+* Latex
+#+begin_src emacs-lisp
+:hook 'org-mode-hook 'org-fragtog-mode
+#+end_src
+
+* Org
+** Org-Mode
+#+begin_src emacs-lisp
+; recursively collect all agenda from all org files
+(setq org-agenda-files (directory-files-recursively "~/pcloudsync/notes/org-notes" "\\.org$"))
+
+#+end_src
+** Org-Roam
+| Command                         | Keybinding |
+|---------------------------------+------------|
+| org-roam-dailies-capture-today  | SPC j n    |
+| org-roam-dailies-find-today     | SPC j j    |
+| org-roam-dailies-find-yesterday | SPC j y    |
+| org-roam-dailies-find-tomorrow  | SPC j o    |
+| org-roam-dailies-find-date      | SPC j f    |
+
+#+begin_src emacs-lisp
+;; path should be ~/pcloudsync/notes/org-notes for org-roam and a =journal= folder inside for daily notes
+(setq org-roam-directory (file-truename "~/pcloudsync/notes/org-notes"))
+(setq org-roam-dailies-directory "journal/")
+;; keybindings for daily capture
+(map! :leader
+      (:prefix ("j" . "journal")
+        :desc "Capture new daily entry" "n" #'org-roam-dailies-capture-today
+        :desc "Go to today's note"      "j" #'org-roam-dailies-goto-today
+        :desc "Go to yesterday's note"  "y" #'org-roam-dailies-goto-yesterday
+        :desc "Go to tomorrow's note"   "o" #'org-roam-dailies-goto-tomorrow
+        :desc "Find date"               "f" #'org-roam-dailies-goto-date
+))
+;; autosync org-roam
+(org-roam-db-autosync-mode)
+#+end_src
+
+* Copilot
+#+begin_src emacs-lisp
+;; accept completion from copilot and fallback to company
+(use-package! copilot
+  :hook (prog-mode . copilot-mode)
+  ;; Bind copilot to <tab> and C-<tab>
+  :bind (:map copilot-completion-map
+             ("<tab>" . 'copilot-accept-completion)
+             ("TAB" . 'copilot-accept-completion)
+             ("C-TAB" . 'copilot-accept-completion-by-word)
+             ("C-<tab>" . 'copilot-accept-completion-by-word)))
+
+#+end_src
+
+* Beautify DOOM Emacs Org Mode
+
+From [[https://mstempl.netlify.app/post/beautify-org-mode/][this article]]
+
+** DOOM Theme
+
+#+begin_src emacs-lisp
+(setq doom-theme 'doom-solarized-light)
+#+end_src
+
+** Hide Emphasis markup
+Like Italics slashes or bold asterisks
+#+begin_src emacs-lisp
+(setq org-hide-emphasis-markers t
+      org-fontify-done-headline t
+      org-hide-leading-stars t
+      org-pretty-entities t
+      org-odd-levels-only t)
+#+end_src
+
+** Better Bullets for Headings
+#+begin_src emacs-lisp
+(use-package org-bullets
+  :custom
+  (org-bullets-bullet-list '("◉" "☯" "○" "☯" "✸" "☯" "✿" "☯" "✜" "☯" "◆" "☯" "▶"))
+  (org-ellipsis "⤵")
+  :hook (org-mode . org-bullets-mode))
+#+end_src
+
+** Fonts
+
+*** Variable-pitch and fixed-pitch faces
+#+begin_src emacs-lisp
+(set-face-attribute 'default nil :family "DejaVu Sans Mono" :height 130)
+(set-face-attribute 'fixed-pitch nil :family "DejaVu Sans Mono")
+(set-face-attribute 'variable-pitch nil :family "IBM Plex Serif")
+(add-hook 'org-mode-hook 'variable-pitch-mode)
+#+end_src
+*** Visual line mode for line wraps
+#+begin_src emacs-lisp
+  (add-hook 'org-mode-hook 'visual-line-mode)
+#+end_src
+
+* Emojis
+#+begin_src emacs-lisp
+(use-package emojify
+    :hook (org-mode . emojify-mode)
+    :config
+    (setq emojify-emoji-styles '(unicode)))
+
+#+end_src
+
+* Neotree
+| Command        | Keybinding | Description                |
+|----------------|------------|----------------------------|
+| neotree-toggle | SPC t n    | Toggle neotree file viewer |
+| neotree-dir    | SPC d n    | Open directory in neotree  |
+
+
+
+#+begin_src emacs-lisp
+(after! neotree
+  (setq neo-smart-open t
+        neo-window-fixed-size nil)) ; make neotree window size dynamic
+(after! doom-themes
+  (setq doom-neotree-enable-variable-pitch t)) ; for variable pitch fonts
+(map! :leader
+      :desc "Toggle neotree file viewer" "t n" #'neotree-toggle
+      :desc "Open directory in neotree"  "d n" #'neotree-dir)
+#+end_src
+
+* Undo history
+#+begin_src emacs-lisp
+(setq undo-limit 80000000
+      undo-strong-limit 120000000
+      undo-outer-limit 240000000)
+(setq undo-tree-auto-save-history t)
+#+end_src
