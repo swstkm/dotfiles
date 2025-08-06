@@ -57,10 +57,10 @@
     :recipe (:host github :repo "copilot-emacs/copilot.el" :files ("*.el")))
 
 ;; Org-roam
+(package! org-modern)
 (package! org-roam)
 (package! org-roam-ql)
 (package! org-roam-bibtex)
-(package! org-fragtog)
 
 (package! flycheck-aspell) ; spell checking
 (package! calfw)           ; calendar framework
@@ -70,6 +70,7 @@
 (package! dired-subtree)   ; dired subtree
 (package! dirvish)        ; a better dired
 (package! dmenu)          ; dmenu for Emacs: It is a dynamic menu for X11
+(package! org-super-agenda) ; super agenda for org-mode
 (package! ednc)           ; Emacs Desktop Notification Center
 (package! emojify)        ; emoji support for Emacs
 ;; (package! evil-tutor)  ; evil tutorial
@@ -89,3 +90,16 @@
 (package! clippy)
 (package! minimap)
 (package! olivetti)
+(package! focus)
+(package! hydra)          ; for keybindings
+(package! org-appear)     ; make invisible parts of Org elements appear visible
+(package! org-fragtog) ; automatically toggle LaTeX fragments in Org mode
+
+(package! doom-nano-themes :recipe (:host github :repo "ronisbr/doom-nano-themes"))
+(package! doom-nano-modeline :recipe (:host github :repo "ronisbr/doom-nano-modeline"))
+
+(package! move-text)
+(package! ts)
+(package! mixed-pitch) ; mixed pitch mode for Org mode
+(package! org-agenda-show-deadlines
+  :recipe (:host github :repo "legalnonsense/org-agenda-show-deadlines"))

@@ -1,135 +1,395 @@
-#+TITLE: Swastik's Doom Emacs Config
-#+AUTHOR: Swastik Mishra
-#+DESCRIPTION: Personal config
-#+STARTUP: showeverything
+#+title: swastik's doom emacs config
+#+author: swastik mishra
+#+description: personal config
+#+startup: content
 
-* Latex
+* latex
 #+begin_src emacs-lisp
-:hook 'org-mode-hook 'org-fragtog-mode
+(add-hook 'org-mode-hook 'org-fragtog-mode)
 #+end_src
 
-* Org
-** Org-Mode
+* projectile
+
 #+begin_src emacs-lisp
+(use-package projectile
+  ; load after vertico to ensure compatibility
+  :after vertico
+  :defer t
+  :config
+  (setq projectile-project-search-path '("~/cloudsync/notes/" "~/.doom.d/"))
+  (projectile-mode +1) ; enable projectile globally
+  (setq projectile-indexing-method 'native) ; use native indexing for better performance
+  (setq projectile-enable-caching t) ; enable caching for faster access
+  (setq projectile-sort-order 'recentf) ; sort projects by recent access
+  (setq projectile-switch-project-action 'projectile-dired) ; open project in dired mode
+)
+#+end_src
+
+* org
+** org-mode
+#+begin_src emacs-lisp
+; mark done tasks with a timestamp
+(setq org-log-done 'time)
+
 ; recursively collect all agenda from all org files
-(setq org-agenda-files (directory-files-recursively "~/pcloudsync/notes/org-notes" "\\.org$"))
+(setq org-agenda-files (directory-files-recursively "~/cloudsync/notes/org/" "\\.org$"))
+
+; indent by 1 level and use spaces instead of tabs
+(setq org-indent-indentation-per-level 1)
+(setq org-startup-indented t) ; enable indented mode
+(setq org-adapt-indentation nil) ; disable automatic indentation
+
+; groupby tags using org-super-agenda
+(use-package! org-super-agenda
+  :after org-agenda
+  :config
+  (org-super-agenda-mode)
+  (setq org-super-agenda-groups
+        '(
+          (:name "academic" :tag "academic" :order 0)
+          (:name "personal" :tag "personal" :order 1)
+          (:name "uncompleted work" :todo "doing" :scheduled past :order 2)
+          (:name "other" :todo nil :order 99)
+          )
+  )
+)
+;org modern globally
+(with-eval-after-load 'org (global-org-modern-mode))
+; org-agenda tags alignment to the right
+(after! org
+  (setq org-agenda-tags-column -60))
+(after! org
+  (setq org-tags-column 90))
+
 
 #+end_src
-** Org-Roam
-| Command                         | Keybinding |
-|---------------------------------+------------|
-| org-roam-dailies-capture-today  | SPC j n    |
-| org-roam-dailies-find-today     | SPC j j    |
-| org-roam-dailies-find-yesterday | SPC j y    |
-| org-roam-dailies-find-tomorrow  | SPC j o    |
-| org-roam-dailies-find-date      | SPC j f    |
 
+*** visual fill mode for consistent line widths
 #+begin_src emacs-lisp
-;; path should be ~/pcloudsync/notes/org-notes for org-roam and a =journal= folder inside for daily notes
-(setq org-roam-directory (file-truename "~/pcloudsync/notes/org-notes"))
-(setq org-roam-dailies-directory "journal/")
+(use-package! visual-fill-column
+  :hook ((org-mode . visual-fill-column-mode)
+         (markdown-mode . visual-fill-column-mode)
+         )
+  :config
+  (setq visual-fill-column-width 80) ; set your preferred maximum line width
+  (setq visual-fill-column-center-text t)
+  ) ; center the text block with equal margins
+
+(defun my/visual-fill-column-setup ()
+  (setq-local visual-fill-column-width 80)
+  (setq-local visual-fill-column-center-text t)
+  (visual-fill-column-mode 1))
+
+(add-hook 'org-mode-hook #'my/visual-fill-column-setup)
+(add-hook 'markdown-mode-hook #'my/visual-fill-column-setup)
+
+#+end_src
+** org-roam
+#+begin_src emacs-lisp
+;; path should be ~/cloudsync/notes/org for org-roam and a =dailies= directory for daily notes
+(setq org-roam-directory (file-truename "~/cloudsync/notes/org/"))
+(setq org-roam-dailies-directory "./dailies/")
 ;; keybindings for daily capture
 (map! :leader
       (:prefix ("j" . "journal")
-        :desc "Capture new daily entry" "n" #'org-roam-dailies-capture-today
-        :desc "Go to today's note"      "j" #'org-roam-dailies-goto-today
-        :desc "Go to yesterday's note"  "y" #'org-roam-dailies-goto-yesterday
-        :desc "Go to tomorrow's note"   "o" #'org-roam-dailies-goto-tomorrow
-        :desc "Find date"               "f" #'org-roam-dailies-goto-date
+        :desc "capture new daily entry" "c" #'org-roam-dailies-capture-today
+        :desc "go to today's note"      "j" #'org-roam-dailies-goto-today
+        :desc "go to previous note"   "p" #'org-roam-dailies-goto-previous-note
+        :desc "go to next note"       "n" #'org-roam-dailies-goto-next-note
+        :desc "find date"               "f" #'org-roam-dailies-goto-date
 ))
 ;; autosync org-roam
 (org-roam-db-autosync-mode)
+;; make stuff appear using org-appear
+(add-hook 'org-mode-hook 'org-appear-mode)
+
+;; If you're using a vertical completion framework, you might want a more informative completion interface
+(setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
 #+end_src
 
-* Copilot
+** org capture
 #+begin_src emacs-lisp
-;; accept completion from copilot and fallback to company
-(use-package! copilot
-  :hook (prog-mode . copilot-mode)
-  ;; Bind copilot to <tab> and C-<tab>
-  :bind (:map copilot-completion-map
-             ("<tab>" . 'copilot-accept-completion)
-             ("TAB" . 'copilot-accept-completion)
-             ("C-TAB" . 'copilot-accept-completion-by-word)
-             ("C-<tab>" . 'copilot-accept-completion-by-word)))
+;; org mode settings
+;; default file for timestamped journal entries is inbox.org in org directory
+(setq org-default-notes-file (concat org-directory "inbox.org"))
+;; set the default file for org capture as inbox.org also for +org-capture-journal-file
+(setq +org-capture-journal-file (concat org-directory "inbox.org"))
+(setq +org-capture-notes-file (concat org-directory "inbox.org"))
+;; set the default directory for org files
+(setq org-directory (file-truename "~/cloudsync/notes/org/"))
+#+end_src
+
+** Org super agenda
+*** show agenda and todo together: custom agenda command
+#+begin_src emacs-lisp
+; set start day as nil
+(setq org-agenda-start-on-weekday nil)
+(setq org-agenda-start-day nil)
+
+(setq org-agenda-custom-commands
+      '(("u" "super view"
+         (
+          (agenda "" ((org-agenda-overriding-header "================ AGENDA ================")
+                (org-agenda-span 1)
+                ;; include diary entries in agenda
+                (org-agenda-include-diary nil)
+                ;; show all dates in agenda: nil means no dates
+                (org-agenda-show-all-dates nil)
+                (org-agenda-time-grid nil)
+                (org-super-agenda-groups
+                       '((:name "today"
+                          :tag "today"
+                          :time-grid t  ; time grid shows tasks with scheduled times
+                          :deadline today
+                          :scheduled today)
+                         (:name "overdue"
+                          :deadline past)
+                         (:name "reschedule"
+                          :scheduled past)
+                         (:name "personal"
+                          :tag "personal")
+                         (:name "due soon"
+                          :deadline future
+                          :scheduled future)
+                         ))))
+          ))
+        ("d" "done in the last 7 days"
+                tags "+CLOSED>=\"<-7d>\""
+                ((org-agenda-overriding-header "Done in the last 7 days")
+                 (org-agenda-include-diary nil)
+                 (org-agenda-show-all-dates nil)
+                 ; sorted by newest first
+                 (org-agenda-sorting-strategy '(timestamp-down))
+                 ; prefix with closed time
+                (setq org-agenda-prefix-format " %-12t %-30s %-30F")
+                 ))
+        ("c" "academic but not personal super view"
+                ((agenda "" ((org-agenda-span 1)
+                        (org-agenda-time-grid nil)
+                        (org-super-agenda-groups
+                        '((:name "today"
+                          :tag "today"
+                          :deadline today
+                          :scheduled today
+                          :and (:not (:tag "personal")))
+                        (:name "overdue"
+                          :deadline past
+                          :and (:not (:tag "personal")))
+                        (:name "reschedule"
+                          :scheduled past
+                          :and (:not (:tag "personal")))
+                        (:name "due soon"
+                          :deadline future
+                          :scheduled future
+                          :and (:not (:tag "personal")))))))
+                (todo "todo" ((org-agenda-overriding-header "academic todos")
+                        (org-agenda-include-diary nil)
+                        (org-agenda-show-all-dates nil)
+                        (org-super-agenda-groups
+                         '((:name "academic"
+                            :tag "academic"
+                            :and (:not (:tag "personal")))
+                           (:name "ticklers"
+                            :tag "someday")
+                           (:name "other"
+                            :not (:tag ("academic" "personal")))
+                           ))))))
+        ("p" "personal super view"
+                ((agenda "" ((org-agenda-span 1)
+                        (org-agenda-time-grid nil)
+                        (org-super-agenda-groups
+                        '((:name "today"
+                                :tag "today"
+                                :deadline today
+                                :scheduled today
+                                :and (:tag "personal"))
+                                (:name "overdue"
+                                :deadline past
+                                :and (:tag "personal"))
+                                (:name "reschedule"
+                                :scheduled past
+                                :and (:tag "personal"))
+                                (:name "due soon"
+                                :deadline future
+                                :scheduled future
+                                :and (:tag "personal"))))))
+                (todo "todo" ((org-agenda-overriding-header "personal todos")
+                                (org-agenda-include-diary nil)
+                                (org-agenda-show-all-dates nil)
+                                (org-super-agenda-groups
+                                '((:name "personal"
+                                :tag "personal")
+                                (:name "ticklers"
+                                :tag "someday")
+                                (:name "other"
+                                :not (:tag ("academic" "personal")))
+                                ))))))
+                ))
+
 
 #+end_src
 
-* Beautify DOOM Emacs Org Mode
-
-From [[https://mstempl.netlify.app/post/beautify-org-mode/][this article]]
-
-** DOOM Theme
+** Org tag alist
+Use =org-tag-alist= to define tags for org files.
+Groups:
+- academic
+  - papers
+- personal
+  - emacs
+  - health
+  - relationships
+  - finance
+  - tech
+  - reading
+  - minimalise
+  - commonplace
 
 #+begin_src emacs-lisp
-(setq doom-theme 'doom-solarized-light)
+(setq org-tag-alist
+      '(("academic" . ?a)
+        ("personal" . ?p)
+        ("papers" . ?P)
+        ("emacs" . ?e)
+        ("health" . ?h)
+        ("relationships" . ?r)
+        ("finance" . ?f)
+        ("tech" . ?t)
+        ("reading" . ?R)
+        ("minimalise" . ?m)
+        ("commonplace" . ?c)))
 #+end_src
-
-** Hide Emphasis markup
-Like Italics slashes or bold asterisks
+* relative line numbers
 #+begin_src emacs-lisp
-(setq org-hide-emphasis-markers t
-      org-fontify-done-headline t
-      org-hide-leading-stars t
-      org-pretty-entities t
-      org-odd-levels-only t)
+(setq display-line-numbers-type 'relative)
+(global-display-line-numbers-mode 1)
+
 #+end_src
 
-** Better Bullets for Headings
+* indentation
+#+begin_src emacs-lisp
+(setq-default indent-tabs-mode nil)   ;; use spaces, not tabs
+(setq-default tab-width 4)            ;; display tab characters as 4 spaces
+(setq-default standard-indent 4)      ;; default indent for some modes
+#+end_src
+* beautify doom emacs org mode
+
+from [[https://mstempl.netlify.app/post/beautify-org-mode/][this article]]
+** theme
+
+*** Nano theme
+#+begin_src emacs-lisp
+;; (after! doom-themes
+;;   (load-theme 'doom-nano-light t))
+;; (use-package! doom-nano-modeline
+;;   :config
+;;   (doom-nano-modeline-mode 1)
+;;   (global-hide-mode-line-mode 1))
+#+end_src
+
+*** Default Theme
+#+begin_src emacs-lisp
+(setq doom-theme 'doom-ayu-dark)
+#+end_src
+
+** better bullets for headings
 #+begin_src emacs-lisp
 (use-package org-bullets
   :custom
-  (org-bullets-bullet-list '("◉" "☯" "○" "☯" "✸" "☯" "✿" "☯" "✜" "☯" "◆" "☯" "▶"))
+  (org-bullets-bullet-list '("◉" "○" "✸" "✿" "✪" "✫" "✬" "✭"))
   (org-ellipsis "⤵")
   :hook (org-mode . org-bullets-mode))
 #+end_src
 
-** Fonts
-
-*** Variable-pitch and fixed-pitch faces
+** line spacing
 #+begin_src emacs-lisp
-(set-face-attribute 'default nil :family "DejaVu Sans Mono" :height 130)
-(set-face-attribute 'fixed-pitch nil :family "DejaVu Sans Mono")
-(set-face-attribute 'variable-pitch nil :family "IBM Plex Serif")
-(add-hook 'org-mode-hook 'variable-pitch-mode)
-#+end_src
-*** Visual line mode for line wraps
-#+begin_src emacs-lisp
-  (add-hook 'org-mode-hook 'visual-line-mode)
+; line spacing
+(setq-default line-spacing 0.3)
 #+end_src
 
-* Emojis
+*** visual line mode for line wraps
+#+begin_src emacs-lisp
+;; (add-hook 'org-mode-hook 'visual-line-mode)
+(global-visual-line-mode t)
+;; toggle visual line mode using m-z keybinding
+(map! :map org-mode-map
+      :n "m-z" #'visual-line-mode)
+#+end_src
+
+** brackets
+#+begin_src emacs-lisp
+(show-paren-mode 1) ; show matching parentheses
+#+end_src
+* emojis
 #+begin_src emacs-lisp
 (use-package emojify
+    :defer t
     :hook (org-mode . emojify-mode)
     :config
-    (setq emojify-emoji-styles '(unicode)))
+    (setq emojify-emoji-styles '(unicode))
+    )
 
 #+end_src
 
-* Neotree
-| Command        | Keybinding | Description                |
-|----------------|------------|----------------------------|
-| neotree-toggle | SPC t n    | Toggle neotree file viewer |
-| neotree-dir    | SPC d n    | Open directory in neotree  |
-
-
-
-#+begin_src emacs-lisp
-(after! neotree
-  (setq neo-smart-open t
-        neo-window-fixed-size nil)) ; make neotree window size dynamic
-(after! doom-themes
-  (setq doom-neotree-enable-variable-pitch t)) ; for variable pitch fonts
-(map! :leader
-      :desc "Toggle neotree file viewer" "t n" #'neotree-toggle
-      :desc "Open directory in neotree"  "d n" #'neotree-dir)
-#+end_src
-
-* Undo history
+* undo history
 #+begin_src emacs-lisp
 (setq undo-limit 80000000
       undo-strong-limit 120000000
       undo-outer-limit 240000000)
 (setq undo-tree-auto-save-history t)
+#+end_src
+
+* move text
+#+begin_src emacs-lisp
+
+(map! :leader
+      :prefix "l"
+      :desc "move line/region up"
+      "u" #'move-text-up
+      :desc "move line/region down"
+      "d" #'move-text-down)
+#+end_src
+
+* copilot
+#+begin_src emacs-lisp
+;; accept completion from copilot and fallback to company
+(use-package! copilot
+  :hook (prog-mode . copilot-mode)
+  ;; bind copilot to <tab> and c-<tab>
+  :bind (:map copilot-completion-map
+             ("<tab>" . 'copilot-accept-completion)
+             ("C-<tab>" . 'copilot-accept-completion-by-word)
+             ("C-S-<tab>" . 'copilot-accept-completion-by-line)
+        )
+)
+(setq copilot-indent-offset-warning-disable t)
+#+end_src
+
+* Autosave time/interval
+#+begin_src emacs-lisp
+(setq auto-save-interval 100) ; save every 100 characters
+(setq auto-save-timeout 10) ; save every 10 seconds
+#+end_src
+
+* Treemacs
+
+#+begin_src emacs-lisp
+(use-package treemacs
+  :defer t
+  :config
+  (setq treemacs-width 30) ; set width of treemacs window
+  (setq treemacs-silent-filewatch t) ; disable filewatcher messages
+  (setq treemacs-follow-mode t) ; follow the current file in treemacs
+)
+(map! :leader
+      (:prefix ("o")
+        :desc "select treemacs window/sidebar" "w" #'treemacs-select-window
+))
+#+end_src
+
+* Evil
+#+begin_src emacs-lisp
+(setq evil-respect-visual-line-mode t)
+(define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
+(define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
+
 #+end_src
