@@ -103,3 +103,10 @@
 (package! mixed-pitch) ; mixed pitch mode for Org mode
 (package! org-agenda-show-deadlines
   :recipe (:host github :repo "legalnonsense/org-agenda-show-deadlines"))
+
+(package! logseq-org-roam
+  :recipe (:host github
+            :repo "sbougerel/logseq-org-roam"
+            :files ("*.el")))
+(package! org-transclusion)
+(package! org-download)

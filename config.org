@@ -38,7 +38,7 @@
 (setq org-indent-indentation-per-level 1)
 (setq org-startup-indented t) ; enable indented mode
 (setq org-adapt-indentation nil) ; disable automatic indentation
-
+(setq org-startup-with-inline-images t) ; inline images
 ; groupby tags using org-super-agenda
 (use-package! org-super-agenda
   :after org-agenda
@@ -60,7 +60,8 @@
   (setq org-agenda-tags-column -60))
 (after! org
   (setq org-tags-column 90))
-
+; include plain lists in org-cycle
+(setq org-cycle-include-plain-lists 'integrate)
 
 #+end_src
 
@@ -87,8 +88,10 @@
 ** org-roam
 #+begin_src emacs-lisp
 ;; path should be ~/cloudsync/notes/org for org-roam and a =dailies= directory for daily notes
+
 (setq org-roam-directory (file-truename "~/cloudsync/notes/org/"))
 (setq org-roam-dailies-directory "./dailies/")
+
 ;; keybindings for daily capture
 (map! :leader
       (:prefix ("j" . "journal")
@@ -246,18 +249,39 @@ Groups:
 
 #+begin_src emacs-lisp
 (setq org-tag-alist
-      '(("academic" . ?a)
-        ("personal" . ?p)
-        ("papers" . ?P)
-        ("emacs" . ?e)
-        ("health" . ?h)
-        ("relationships" . ?r)
-        ("finance" . ?f)
-        ("tech" . ?t)
-        ("reading" . ?R)
-        ("minimalise" . ?m)
-        ("commonplace" . ?c)))
+'(("academic" . ?a)
+("personal" . ?p)
+("papers" . ?P)
+("emacs" . ?e)
+("health" . ?h)
+("relationships" . ?r)
+("finance" . ?f)
+("tech" . ?t)
+("reading" . ?R)
+("minimalise" . ?m)
+("commonplace" . ?c)))
 #+end_src
+
+** Org transclusion
+#+begin_src emacs-lisp
+(use-package! org-transclusion
+  :after org
+  :init
+  (map!
+   :map global-map "<f12>" #'org-transclusion-add
+   :leader
+   :prefix "n"
+   :desc "Org Transclusion Mode" "t" #'org-transclusion-mode))
+#+end_src
+
+** Org-download
+#+begin_src emacs-lisp
+(use-package org-download
+  :config
+  (setq org-download-image-dir "attachments")  ;; Change to your preferred folder
+  (add-hook 'org-mode-hook 'org-download-enable))
+#+end_src
+
 * relative line numbers
 #+begin_src emacs-lisp
 (setq display-line-numbers-type 'relative)
